@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kawaii SKKN & Slide Generator 🎀✨</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- PptxGenJS -->
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kawaiiBg: '#FFF0F5',
+                        kawaiiCard: '#FFFFFF',
+                        kawaiiPinkBg: '#FFE4E1',
+                        kawaiiPinkSoft: '#FFB6C1',
+                        kawaiiPink: '#FF69B4',
+                        kawaiiHotPink: '#FF1493',
+                        kawaiiPurple: '#E6E6FA',
+                        kawaiiText: '#5A3E4D',
+                        kawaiiTextMuted: '#9E7A8A',
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'Quicksand', 'sans-serif'],
+                        cute: ['Quicksand', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        kawaii: '0 8px 25px -5px rgba(255, 105, 180, 0.25), 0 8px 10px -6px rgba(255, 182, 193, 0.2)',
+                        kawaiiHover: '0 12px 30px -3px rgba(255, 20, 147, 0.35), 0 8px 15px -5px rgba(255, 105, 180, 0.3)',
+                        glow: '0 0 15px rgba(255, 105, 180, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFF0F5;
+            background-image: 
+                radial-gradient(#FFB6C1 0.75px, transparent 0.75px), 
+                radial-gradient(#FF69B4 0.75px, #FFF0F5 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            font-family: 'Nunito', sans-serif;
+            color: #5A3E4D;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Sparkle & Floating Keyframes */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 105, 180, 0.3); }
+            50% { box-shadow: 0 0 22px rgba(255, 105, 180, 0.7); }
+        }
+
+        .animate-twinkle { animation: twinkle 2.5s infinite ease-in-out; }
+        .animate-float { animation: float 3.5s infinite ease-in-out; }
+        .animate-glow { animation: pulseGlow 2s infinite ease-in-out; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFE4E1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF69B4;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF1493;
+        }
+
+        .kawaii-border {
+            border: 2px solid #FFB6C1;
+        }
+
+        .kawaii-btn {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .kawaii-btn:active {
+            transform: scale(0.95);
+        }
+
+        .badge-tag {
+            background: linear-gradient(135deg, #FFE4E1, #FFF0F5);
+            border: 1.5px dashed #FF69B4;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 flex flex-col justify-between select-none">
+
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b-2 border-kawaiiPinkSoft/50 px-4 py-3 shadow-sm">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl animate-float inline-block">🎀</span>
+                <div>
+                    <h1 class="font-cute font-bold text-lg text-kawaiiHotPink flex items-center gap-1">
+                        SKKN & Slide Maker <span class="text-xs px-2 py-0.5 rounded-full bg-kawaiiPink/10 text-kawaiiHotPink border border-kawaiiPink/30">v2.5</span>
+                    </h1>
+                    <p class="text-xs text-kawaiiTextMuted">Sáng Kiến Kinh Nghiệm Cute ✨</p>
+                </div>
+            </div>
+            <button onclick="switchTab('templates')" class="bg-kawaiiPinkBg text-kawaiiHotPink hover:bg-kawaiiPinkSoft hover:text-white px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1 border border-kawaiiPinkSoft">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Mẫu Đề Tài
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-xl mx-auto px-4 pt-4 w-full flex-grow">
+
+        <div class="flex bg-white/80 p-1.5 rounded-2xl border border-kawaiiPinkSoft shadow-sm mb-5">
+            <button id="tabBtnForm" onclick="switchTab('form')" class="flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-kawaiiPink to-kawaiiHotPink shadow-md transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-pen-nib"></i> 1. Nhập SKKN
+            </button>
+            <button id="tabBtnEditor" onclick="switchTab('editor')" class="flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold text-kawaiiText hover:text-kawaiiHotPink transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-file-lines"></i> 2. Nội Dung Full
+            </button>
+            <button id="tabBtnSlides" onclick="switchTab('slides')" class="flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold text-kawaiiText hover:text-kawaiiHotPink transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-file-powerpoint"></i> 3. Slide PPTX
+            </button>
+        </div>
+
+        <section id="sectionForm" class="space-y-4">
+            <div class="bg-kawaiiCard p-5 rounded-3xl border-2 border-kawaiiPinkSoft shadow-kawaii relative overflow-hidden">
+                <!-- Floating Decorative Sparkles -->
+                <span class="absolute top-2 right-3 text-kawaiiPink animate-twinkle text-lg">✨</span>
+                <span class="absolute bottom-3 left-3 text-kawaiiHotPink animate-twinkle text-sm" style="animation-delay: 1s;">🌸</span>
+
+                <div class="flex items-center justify-between mb-4 pb-2 border-b border-kawaiiPinkBg">
+                    <h2 class="font-cute font-bold text-base text-kawaiiHotPink flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-kawaiiPink"></i> Thông Tin Đề Tài SKKN
+                    </h2>
+                    <span class="text-xs badge-tag px-2.5 py-0.5 rounded-full text-kawaiiHotPink font-semibold">Chuẩn BGD&ĐT 🌸</span>
+                </div>
+
+                <form id="skknForm" onsubmit="handleGenerateSKKN(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-kawaiiText mb-1">🎀 Tên Đề Tài Sáng Kiến:</label>
+                        <input type="text" id="skknTitle" required placeholder="VD: Một số biện pháp nâng cao chất lượng dạy học môn Toán lớp 3..." 
+                            class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText font-medium">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-kawaiiText mb-1">📚 Môn Học / Hoạt Động:</label>
+                            <input type="text" id="skknSubject" required placeholder="VD: Toán, Tiếng Việt, Mầm non..." 
+                                class="w-full text-xs p-2.5 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-kawaiiText mb-1">🏫 Khối / Lớp:</label>
+                            <input type="text" id="skknGrade" required placeholder="VD: Lớp 4A, Khối Mẫu giáo..." 
+                                class="w-full text-xs p-2.5 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-kawaiiText mb-1">👩‍🏫 Tác Giả / Giáo Viên:</label>
+                        <input type="text" id="skknAuthor" required placeholder="VD: Nguyễn Thị Mai - Trường TH Hoa Hồng" 
+                            class="w-full text-xs p-2.5 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-kawaiiText mb-1">🥀 Thực Trạng & Khó Khăn Ban Đầu:</label>
+                        <textarea id="skknProblem" rows="3" required placeholder="Học sinh còn thụ động, chưa hứng thú, kỹ năng làm bài còn hạn chế..." 
+                            class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-kawaiiText mb-1">⭐ Các Biện Pháp Cải Tiến (Giải Pháp):</label>
+                        <textarea id="skknSolution" rows="3" required placeholder="- Biện pháp 1: Tăng cường trò chơi học tập&#10;- Biện pháp 2: Ứng dụng công nghệ thông tin..." 
+                            class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-kawaiiText mb-1">💖 Kết Quả Đạt Được:</label>
+                        <textarea id="skknResult" rows="2" required placeholder="100% học sinh hào hứng, 85% học sinh đạt loại giỏi, lớp học sôi nổi..." 
+                            class="w-full text-xs sm:text-sm p-3 rounded-xl border-2 border-kawaiiPinkBg focus:border-kawaiiPink focus:outline-none transition bg-kawaiiBg/30 text-kawaiiText resize-none"></textarea>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-kawaiiPink to-kawaiiHotPink hover:from-kawaiiHotPink hover:to-pink-600 text-white font-extrabold rounded-2xl shadow-lg shadow-kawaiiPink/40 kawaii-btn flex items-center justify-center gap-2 text-sm border-2 border-white">
+                            <i class="fa-solid fa-wand-magic-sparkles text-yellow-200 animate-spin" style="animation-duration: 4s;"></i> TỰ ĐỘNG TẠO SKKN CỰC NHANH ✨
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section id="sectionEditor" class="hidden space-y-4">
+            <div class="bg-kawaiiCard p-4 sm:p-5 rounded-3xl border-2 border-kawaiiPinkSoft shadow-kawaii">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-kawaiiPinkBg">
+                    <h2 class="font-cute font-bold text-sm sm:text-base text-kawaiiHotPink flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-circle-check"></i> Văn Bản SKKN Hoàn Chỉnh
+                    </h2>
+                    <div class="flex items-center gap-1">
+                        <button onclick="copySKKNText()" class="px-2.5 py-1 bg-kawaiiPinkBg text-kawaiiHotPink hover:bg-kawaiiPinkSoft hover:text-white rounded-lg text-xs font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-copy"></i> Sao Chép
+                        </button>
+                        <button onclick="exportDocFile()" class="px-2.5 py-1 bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-file-word"></i> Tải Word (.doc)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Editable Rich Text Box -->
+                <div id="skknTextOutput" contenteditable="true" class="p-4 bg-white rounded-2xl border-2 border-kawaiiPinkBg text-xs sm:text-sm text-kawaiiText space-y-4 max-h-[60vh] overflow-y-auto leading-relaxed focus:outline-none focus:border-kawaiiPink shadow-inner">
+                    <p class="text-center text-kawaiiTextMuted py-8">
+                        <i class="fa-solid fa-heart-pulse text-3xl text-kawaiiPinkSoft mb-2 block animate-bounce"></i>
+                        Vui lòng nhập thông tin ở Bước 1 và nhấn <b>Tạo SKKN</b> để xem văn bản tại đây nhé! ✨
+                    </p>
+                </div>
+
+                <div class="mt-4 flex flex-col sm:flex-row gap-2">
+                    <button onclick="switchTab('slides'); renderSlidePreviews();" class="flex-1 py-3 bg-gradient-to-r from-kawaiiPink to-kawaiiHotPink text-white font-extrabold rounded-xl shadow-md text-xs sm:text-sm flex items-center justify-center gap-2 kawaii-btn">
+                        <i class="fa-solid fa-file-powerpoint text-yellow-200"></i> Chuyển Thành Slide PowerPoint (.pptx) ✨
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="sectionSlides" class="hidden space-y-4">
+            <div class="bg-kawaiiCard p-4 sm:p-5 rounded-3xl border-2 border-kawaiiPinkSoft shadow-kawaii">
+                <div class="flex items-center justify-between mb-3 pb-2 border-b border-kawaiiPinkBg">
+                    <div>
+                        <h2 class="font-cute font-bold text-base text-kawaiiHotPink flex items-center gap-1.5">
+                            <i class="fa-solid fa-sliders text-kawaiiPink"></i> Báo Cáo Slide SKKN Cute
+                        </h2>
+                        <p class="text-[11px] text-kawaiiTextMuted">Xem trước & Tải về bộ slide sắc màu kawaii 🎀</p>
+                    </div>
+                    <button onclick="downloadPowerPoint()" class="px-3 py-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-white rounded-xl text-xs font-extrabold shadow-md hover:brightness-105 transition flex items-center gap-1.5 kawaii-btn">
+                        <i class="fa-solid fa-download"></i> Tải PPTX (.pptx)
+                    </button>
+                </div>
+
+                <!-- Slide Cards List Container -->
+                <div id="slidesContainer" class="space-y-3 max-h-[55vh] overflow-y-auto pr-1">
+                    <div class="text-center py-10 bg-kawaiiBg/40 rounded-2xl border-2 border-dashed border-kawaiiPinkSoft">
+                        <i class="fa-solid fa-wand-magic text-3xl text-kawaiiPink mb-2 block animate-pulse"></i>
+                        <p class="text-xs text-kawaiiTextMuted font-medium">Chưa có dữ liệu Slide! Hãy bấm "Tạo SKKN" trước nha! ✨</p>
+                    </div>
+                </div>
+
+                <!-- Download Action Buttons -->
+                <div class="pt-2 flex gap-2">
+                    <button onclick="downloadPowerPoint()" class="w-full py-3.5 bg-gradient-to-r from-kawaiiHotPink to-pink-600 text-white font-extrabold rounded-2xl shadow-lg shadow-kawaiiHotPink/30 flex items-center justify-center gap-2 text-sm border-2 border-white kawaii-btn">
+                        <i class="fa-solid fa-cloud-arrow-down text-lg"></i> TẢI SLIDE POWERPOINT KHÔNG LỖI (.PPTX) 🎀
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="sectionTemplates" class="hidden space-y-4">
+            <div class="bg-kawaiiCard p-5 rounded-3xl border-2 border-kawaiiPinkSoft shadow-kawaii">
+                <div class="flex items-center justify-between mb-4 pb-2 border-b border-kawaiiPinkBg">
+                    <h2 class="font-cute font-bold text-base text-kawaiiHotPink flex items-center gap-2">
+                        <i class="fa-solid fa-book-sparkles text-kawaiiPink"></i> Danh Sách Đề Tài Mẫu Chuẩn
+                    </h2>
+                    <button onclick="switchTab('form')" class="text-xs text-kawaiiTextMuted hover:text-kawaiiHotPink font-bold">
+                        <i class="fa-solid fa-xmark text-sm"></i> Đóng
+                    </button>
+                </div>
+                <p class="text-xs text-kawaiiTextMuted mb-3">Chọn một đề tài mẫu bên dưới để điền nhanh dữ liệu vào Form:</p>
+
+                <div class="space-y-2.5 max-h-[60vh] overflow-y-auto">
+                    <!-- Template Item 1 -->
+                    <div onclick="loadTemplate(0)" class="p-3 bg-kawaiiBg/50 hover:bg-kawaiiPinkBg rounded-2xl border border-kawaiiPinkSoft cursor-pointer transition flex items-center justify-between group">
+                        <div>
+                            <span class="text-[10px] bg-kawaiiHotPink text-white px-2 py-0.5 rounded-full font-bold">Tiểu Học - Toán</span>
+                            <h4 class="text-xs font-bold text-kawaiiText group-hover:text-kawaiiHotPink mt-1">Một số biện pháp nâng cao chất lượng dạy học phép nhân, phép chia lớp 3</h4>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-kawaiiPink text-xs group-hover:translate-x-1 transition"></i>
+                    </div>
+
+                    <!-- Template Item 2 -->
+                    <div onclick="loadTemplate(1)" class="p-3 bg-kawaiiBg/50 hover:bg-kawaiiPinkBg rounded-2xl border border-kawaiiPinkSoft cursor-pointer transition flex items-center justify-between group">
+                        <div>
+                            <span class="text-[10px] bg-purple-500 text-white px-2 py-0.5 rounded-full font-bold">Mầm Non</span>
+                            <h4 class="text-xs font-bold text-kawaiiText group-hover:text-kawaiiHotPink mt-1">Gia tăng hứng thú cho trẻ 4-5 tuổi qua các hoạt động tạo hình sáng tạo</h4>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-kawaiiPink text-xs group-hover:translate-x-1 transition"></i>
+                    </div>
+
+                    <!-- Template Item 3 -->
+                    <div onclick="loadTemplate(2)" class="p-3 bg-kawaiiBg/50 hover:bg-kawaiiPinkBg rounded-2xl border border-kawaiiPinkSoft cursor-pointer transition flex items-center justify-between group">
+                        <div>
+                            <span class="text-[10px] bg-pink-500 text-white px-2 py-0.5 rounded-full font-bold">THCS - Tiếng Anh</span>
+                            <h4 class="text-xs font-bold text-kawaiiText group-hover:text-kawaiiHotPink mt-1">Ứng dụng trò chơi tương tác nâng cao vốn từ vựng Tiếng Anh cho học sinh lớp 6</h4>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-kawaiiPink text-xs group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Kawaii Toast / Alert Notification -->
+    <div id="kawaiiToast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none w-11/12 max-w-sm">
+        <div class="bg-white border-2 border-kawaiiHotPink px-4 py-3 rounded-2xl shadow-glow flex items-center space-x-3 text-xs sm:text-sm font-bold text-kawaiiText">
+            <span id="toastIcon" class="text-xl">✨</span>
+            <span id="toastMessage">Thông báo ngọt ngào từ ứng dụng!</span>
+        </div>
+    </div>
+
+    <!-- Fallback Download Modal for Mobile Samsung / Google WebViews -->
+    <div id="fallbackModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl border-4 border-kawaiiPink p-5 max-w-sm w-full text-center space-y-4 animate-float">
+            <div class="text-3xl">🎉 🎀 ✨</div>
+            <h3 class="font-cute font-bold text-base text-kawaiiHotPink">Slide PowerPoint Đã Hoàn Thành!</h3>
+            <p class="text-xs text-kawaiiText leading-relaxed">
+                Do cài đặt duyệt web trên thiết bị di động, nếu file không tự động tải xuống, bấm nút bên dưới để mở liên kết tải trực tiếp:
+            </p>
+            <a id="fallbackDownloadLink" download="SKKN_Presentation_Kawaii.pptx" href="#" class="block w-full py-3 bg-gradient-to-r from-kawaiiPink to-kawaiiHotPink text-white font-extrabold rounded-2xl shadow-lg text-xs">
+                <i class="fa-solid fa-file-powerpoint"></i> BẤM VÀO ĐÂY ĐỂ TẢI SLIDE (.PPTX)
+            </a>
+            <button onclick="closeFallbackModal()" class="text-xs text-kawaiiTextMuted underline font-semibold">
+                Đóng cửa sổ này
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-[11px] text-kawaiiTextMuted space-y-1">
+        <p class="flex items-center justify-center gap-1">
+            Thiết kế riêng cho Giáo Viên Việt Nam <i class="fa-solid fa-heart text-kawaiiPink animate-pulse"></i> Samsung Galaxy Optimized
+        </p>
+        <p class="opacity-75">© 2026 Kawaii SKKN & Slide Generator Tool</p>
+    </footer>
+
+    <script>
+        // Sample Pre-filled Templates Data
+        const sampleTemplates = [
+            {
+                title: "Một số biện pháp nâng cao chất lượng dạy học phép nhân, phép chia môn Toán lớp 3",
+                subject: "Toán học",
+                grade: "Lớp 3",
+                author: "Nguyễn Thị Hương - Trường Tiểu Học Hoa Sen",
+                problem: "Học sinh còn nhầm lẫn bảng nhân, bảng chia; thao tác tính toán còn chậm; chưa chủ động áp dụng toán vào bài tập có lời văn.",
+                solution: "- Biện pháp 1: Trực quan hóa các phép tính qua hình ảnh, sơ đồ vui nhộn.\n- Biện pháp 2: Tổ chức 'Vòng quay toán học' trong 5 phút khởi động bài học.\n- Biện pháp 3: Tăng cường rèn luyện qua bài tập ứng dụng thực tế sinh động.",
+                result: "100% học sinh thuộc bảng nhân chia; 92% học sinh đạt điểm giỏi môn Toán; lớp học luôn vui vẻ và năng động."
+            },
+            {
+                title: "Gia tăng hứng thú cho trẻ 4-5 tuổi qua các hoạt động tạo hình sáng tạo",
+                subject: "Hoạt động Tạo Hình",
+                grade: "Mẫu giáo 4-5 tuổi",
+                author: "Trần Thị Lan - Trường Mầm Nông Họa Mi",
+                problem: "Trẻ nhanh chán khi vẽ trên giấy A4 truyền thống, kỹ năng cầm màu và xé dán của một số trẻ chưa đồng đều.",
+                solution: "- Biện pháp 1: Sử dụng nguyên vật liệu tái chế sinh động (lá cây, vỏ hạt, bìa carton).\n- Biện pháp 2: Kết hợp âm nhạc nhẹ nhàng và câu chuyện tích cực trong giờ học.\n- Biện pháp 3: Trưng bày 'Góc triển lãm tí hon' động viên tinh thần trẻ.",
+                result: "Trẻ vô cùng hào hứng tham gia; 95% trẻ hoàn thành sản phẩm sáng tạo; kỹ năng vận động tinh phát triển rõ rệt."
+            },
+            {
+                title: "Ứng dụng trò chơi tương tác nâng cao vốn từ vựng Tiếng Anh cho học sinh lớp 6",
+                subject: "Tiếng Anh",
+                grade: "Lớp 6",
+                author: "Phạm Văn Minh - Trường THCS Sao Mai",
+                problem: "Học sinh thụ động ghi nhớ từ vựng bằng cách chép thuộc lòng, dễ quên từ chỉ sau vài ngày.",
+                solution: "- Biện pháp 1: Thiết kế trò chơi Quizizz, Kahoot trong phần Warm-up.\n- Biện pháp 2: Học từ vựng qua thẻ Flashcard minh họa dễ thương.\n- Biện pháp 3: Ghép cặp luyện hội thoại thực tế ngắn gọn.",
+                result: "Học sinh tự tin phản xạ từ vựng; điểm kiểm tra 15 phút cải thiện đáng kể; 88% học sinh yêu thích môn Tiếng Anh hơn."
+            }
+        ];
+
+        // Global State Store
+        let currentSKKNData = null;
+
+        // Sound Feedback using Web Audio API
+        function playKawaiiSound(type = 'success') {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15); // A5
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.2);
+                }
+            } catch (e) {
+                console.log('Audio Context not available');
+            }
+        }
+
+        // Custom Toast Alert
+        function showKawaiiToast(msg, icon = '✨') {
+            const toast = document.getElementById('kawaiiToast');
+            document.getElementById('toastMessage').innerText = msg;
+            document.getElementById('toastIcon').innerText = icon;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            playKawaiiSound('click');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Tab Switching Handler
+        function switchTab(tabName) {
+            const tabs = ['form', 'editor', 'slides', 'templates'];
+            tabs.forEach(t => {
+                const section = document.getElementById('section' + t.charAt(0).toUpperCase() + t.slice(1));
+                if (section) section.classList.add('hidden');
+            });
+
+            // Reset active button styles
+            ['Form', 'Editor', 'Slides'].forEach(btn => {
+                const b = document.getElementById('tabBtn' + btn);
+                if (b) {
+                    b.className = "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold text-kawaiiText hover:text-kawaiiHotPink transition flex items-center justify-center gap-1.5";
+                }
+            });
+
+            const activeSection = document.getElementById('section' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            if (activeSection) activeSection.classList.remove('hidden');
+
+            const activeBtn = document.getElementById('tabBtn' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            if (activeBtn) {
+                activeBtn.className = "flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-kawaiiPink to-kawaiiHotPink shadow-md transition flex items-center justify-center gap-1.5";
+            }
+
+            playKawaiiSound('click');
+        }
+
+        // Load pre-filled template into inputs
+        function loadTemplate(index) {
+            const data = sampleTemplates[index];
+            if (!data) return;
+
+            document.getElementById('skknTitle').value = data.title;
+            document.getElementById('skknSubject').value = data.subject;
+            document.getElementById('skknGrade').value = data.grade;
+            document.getElementById('skknAuthor').value = data.author;
+            document.getElementById('skknProblem').value = data.problem;
+            document.getElementById('skknSolution').value = data.solution;
+            document.getElementById('skknResult').value = data.result;
+
+            switchTab('form');
+            showKawaiiToast('Đã nạp mẫu đề tài thành công! 🎀', '🌸');
+        }
+
+        // Generate SKKN Text Logic
+        function handleGenerateSKKN(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('skknTitle').value.trim();
+            const subject = document.getElementById('skknSubject').value.trim();
+            const grade = document.getElementById('skknGrade').value.trim();
+            const author = document.getElementById('skknAuthor').value.trim();
+            const problem = document.getElementById('skknProblem').value.trim();
+            const solution = document.getElementById('skknSolution').value.trim();
+            const result = document.getElementById('skknResult').value.trim();
+
+            currentSKKNData = { title, subject, grade, author, problem, solution, result };
+
+            // Construct Full Professional SKKN Report Document HTML
+            const fullSKKNHTML = `
+                <div style="font-family: 'Times New Roman', Times, serif; color: #111; line-height: 1.6;">
+                    <div style="text-align: center; font-weight: bold; margin-bottom: 20px;">
+                        <p style="font-size: 13pt; text-transform: uppercase; margin: 0;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</p>
+                        <p style="font-size: 12pt; margin: 0;">Độc lập - Tự do - Hạnh phúc</p>
+                        <p style="margin: 5px 0 15px 0;">-------------------</p>
+                        <h2 style="font-size: 16pt; text-transform: uppercase; color: #b30059; margin-top: 15px;">BÁO CÁO SÁNG KIẾN KINH NGHIỆM</h2>
+                        <h3 style="font-size: 14pt; font-style: italic; color: #333; margin-top: 5px;">" ${title} "</h3>
+                    </div>
+
+                    <table style="width: 100%; font-size: 12pt; margin-bottom: 20px; border-collapse: collapse;">
+                        <tr><td style="width: 35%; padding: 3px 0;"><b>Tác giả/Giáo viên:</b></td><td>${author}</td></tr>
+                        <tr><td style="padding: 3px 0;"><b>Môn học / Lớp:</b></td><td>${subject} - ${grade}</td></tr>
+                        <tr><td style="padding: 3px 0;"><b>Thời gian thực hiện:</b></td><td>Năm học 2025 - 2026</td></tr>
+                    </table>
+
+                    <h3 style="font-size: 13pt; font-weight: bold; text-transform: uppercase; color: #004d99; border-bottom: 1.5px solid #004d99; padding-bottom: 3px;">PHẦN I: MỞ ĐẦU</h3>
+                    <p><b>1. Lý do chọn đề tài:</b></p>
+                    <p style="text-indent: 30px; text-align: justify;">Trong bối cảnh đổi mới giáo dục hiện nay, việc nâng cao chất lượng giảng dạy môn <b>${subject}</b> cho học sinh <b>${grade}</b> đóng vai trò vô cùng quan trọng. Tuy nhiên, qua quá trình công tác thực tế, tôi nhận thấy: ${problem}. Xuất phát từ những trăn trở đó, tôi đã nghiên cứu và áp dụng sáng kiến kinh nghiệm: <i>"${title}"</i>.</p>
+                    <p><b>2. Mục đích nghiên cứu:</b> Tìm ra các phương pháp giảng dạy tích cực, nâng cao hứng thú và năng lực học tập của học sinh.</p>
+                    <p><b>3. Đối tượng & Phương pháp:</b> Học sinh khối lớp ${grade}; Phương pháp quan sát, thực nghiệm sư phạm và tổng kết kinh nghiệm.</p>
+
+                    <h3 style="font-size: 13pt; font-weight: bold; text-transform: uppercase; color: #004d99; border-bottom: 1.5px solid #004d99; padding-bottom: 3px; margin-top: 20px;">PHẦN II: NỘI DUNG SÁNG KIẾN</h3>
+                    <p><b>1. Thực trạng ban đầu:</b></p>
+                    <p style="text-indent: 30px; text-align: justify;">Khi chưa áp dụng sáng kiến, việc học của các em còn gặp một số khó khăn nhất định. Cụ thể: ${problem}</p>
+                    <p><b>2. Các biện pháp / giải pháp cải tiến đã thực hiện:</b></p>
+                    <div style="background-color: #fffaf0; padding: 10px 15px; border-left: 4px solid #ff9900; margin: 10px 0;">
+                        ${solution.split('\n').map(line => `<p style="margin: 4px 0;">• ${line}</p>`).join('')}
+                    </div>
+                    <p><b>3. Hiệu quả áp dụng sáng kiến:</b></p>
+                    <p style="text-indent: 30px; text-align: justify;">Sau một thời gian áp dụng đồng bộ các giải pháp trên vào thực tiễn giảng dạy, kết quả thu được rất khả quan: ${result}.</p>
+
+                    <h3 style="font-size: 13pt; font-weight: bold; text-transform: uppercase; color: #004d99; border-bottom: 1.5px solid #004d99; padding-bottom: 3px; margin-top: 20px;">PHẦN III: KẾT LUẬN VÀ KIẾN NGHỊ</h3>
+                    <p style="text-indent: 30px; text-align: justify;"><b>1. Kết luận:</b> Sáng kiến đã mang lại luồng sinh khí mới cho giờ học, giúp học sinh chủ động tiếp thu kiến thức và phát triển kỹ năng toàn diện.</p>
+                    <p style="text-indent: 30px; text-align: justify;"><b>2. Kiến nghị:</b> Kính mong Ban giám hiệu nhà trường và Tổ chuyên môn tiếp tục hỗ trợ trang thiết bị dạy học hiện đại để nhân rộng mô hình sáng kiến này.</p>
+
+                    <div style="margin-top: 30px; text-align: right; font-size: 12pt;">
+                        <p style="margin: 0; font-style: italic;">..., Ngày ..... tháng ..... năm 2026</p>
+                        <p style="margin: 5px 0 60px 0; font-weight: bold;">Người báo cáo</p>
+                        <p style="font-weight: bold; color: #333;">${author}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('skknTextOutput').innerHTML = fullSKKNHTML;
+
+            // Trigger Confetti Celebration 🎉
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#FF69B4', '#FF1493', '#FFB6C1', '#FFE4E1']
+            });
+
+            playKawaiiSound('success');
+            showKawaiiToast('Tạo SKKN thành công xuất sắc! 💖', '✨');
+            switchTab('editor');
+        }
+
+        // Copy Text to Clipboard
+        function copySKKNText() {
+            const container = document.getElementById('skknTextOutput');
+            const range = document.createRange();
+            range.selectNode(container);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+
+            try {
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                showKawaiiToast('Đã sao chép SKKN vào bộ nhớ tạm! 📋', '🌸');
+            } catch (err) {
+                showKawaiiToast('Không thể sao chép, hãy chọn thủ công nhé!', '⚠️');
+            }
+        }
+
+        // Export as Microsoft Word (.doc)
+        function exportDocFile() {
+            if (!currentSKKNData) {
+                showKawaiiToast('Vui lòng tạo SKKN trước khi tải! 🎀', '⚠️');
+                return;
+            }
+
+            const htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>SKKN Export</title></head>
+                <body>
+                    ${document.getElementById('skknTextOutput').innerHTML}
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `SKKN_${currentSKKNData.subject}_${currentSKKNData.grade}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showKawaiiToast('Đã xuất file MS Word thành công! 📄', '✨');
+        }
+
+        // Render Cute Preview Cards for PowerPoint Slides
+        function renderSlidePreviews() {
+            if (!currentSKKNData) return;
+
+            const slides = [
+                {
+                    num: 1,
+                    title: "SLIDE 1: TRANG TIÊU ĐỀ BÁO CÁO",
+                    type: "Title Slide 🌸",
+                    content: `<b>Đề tài:</b> ${currentSKKNData.title}<br><b>Giáo viên:</b> ${currentSKKNData.author}<br><b>Lớp:</b> ${currentSKKNData.grade}`
+                },
+                {
+                    num: 2,
+                    title: "SLIDE 2: MỞ ĐẦU & LÝ DO CHỌN ĐỀ TÀI",
+                    type: "Content Slide 📚",
+                    content: `• Đổi mới phương pháp dạy học môn ${currentSKKNData.subject}<br>• Xuất phát từ thực trạng học tập của học sinh ${currentSKKNData.grade}<br>• Nhằm phát triển năng lực và phẩm chất học sinh.`
+                },
+                {
+                    num: 3,
+                    title: "SLIDE 3: THỰC TRẠNG BAN ĐẦU",
+                    type: "Problem Slide 🥀",
+                    content: `<b>Khó khăn ghi nhận:</b><br>${currentSKKNData.problem}`
+                },
+                {
+                    num: 4,
+                    title: "SLIDE 4: CÁC BIỆN PHÁP CẢI TIẾN (GIẢI PHÁP)",
+                    type: "Solution Slide ⭐",
+                    content: `${currentSKKNData.solution.split('\n').join('<br>')}`
+                },
+                {
+                    num: 5,
+                    title: "SLIDE 5: KẾT QUẢ & HIỆU QUẢ ĐẠT ĐƯỢC",
+                    type: "Result Slide 💖",
+                    content: `<b>Kết quả nổi bật:</b><br>${currentSKKNData.result}`
+                },
+                {
+                    num: 6,
+                    title: "SLIDE 6: KẾT LUẬN & TRÂN TRỌNG CẢM ƠN",
+                    type: "Ending Slide 🎀",
+                    content: `• Sáng kiến mang lại hiệu quả cao trong giảng dạy.<br>• Kính chúc Quý thầy cô sức khỏe và thành công!`
+                }
+            ];
+
+            const container = document.getElementById('slidesContainer');
+            container.innerHTML = slides.map(slide => `
+                <div class="p-3.5 bg-gradient-to-r from-white to-pink-50/40 rounded-2xl border-2 border-kawaiiPinkSoft shadow-sm relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-kawaiiHotPink flex items-center gap-1">
+                            <i class="fa-solid fa-note-sticky text-kawaiiPink"></i> ${slide.title}
+                        </span>
+                        <span class="text-[10px] bg-kawaiiPinkBg text-kawaiiHotPink px-2 py-0.5 rounded-full font-bold">
+                            ${slide.type}
+                        </span>
+                    </div>
+                    <div class="text-xs text-kawaiiText leading-relaxed bg-white/80 p-2.5 rounded-xl border border-pink-100">
+                        ${slide.content}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Generate and Download PowerPoint Presentation (.pptx) with PptxGenJS
+        async function downloadPowerPoint() {
+            if (!currentSKKNData) {
+                showKawaiiToast('Vui lòng tạo SKKN ở Bước 1 trước nhé! 🎀', '⚠️');
+                return;
+            }
+
+            try {
+                showKawaiiToast('Đang khởi tạo Slide PowerPoint Cute... ⏳', '✨');
+
+                const pptx = new PptxGenJS();
+                pptx.layout = 'LAYOUT_16x9';
+
+                // Kawaii Color Theme Definitions
+                const PINK_DARK = 'FF1493';
+                const PINK_MAIN = 'FF69B4';
+                const PINK_LIGHT = 'FFE4E1';
+                const TEXT_DARK = '4A2E35';
+
+                // Slide 1: Cover Slide
+                const slide1 = pptx.addSlide();
+                slide1.background = { color: PINK_LIGHT };
+                
+                // Header decoration line
+                slide1.addShape(pptx.shapes.RECTANGLE, { x: 0, y: 0, w: '100%', h: 0.4, fill: { color: PINK_MAIN } });
+                
+                slide1.addText("BÁO CÁO SÁNG KIẾN KINH NGHIỆM 🎀", {
+                    x: 0.5, y: 1.0, w: 9.0, h: 0.6,
+                    fontSize: 22, bold: true, color: PINK_DARK, align: 'center', fontFace: 'Arial'
+                });
+                
+                slide1.addText(`"${currentSKKNData.title}"`, {
+                    x: 0.8, y: 1.8, w: 8.4, h: 1.8,
+                    fontSize: 24, bold: true, color: TEXT_DARK, align: 'center', fontFace: 'Arial', isTextBox: true
+                });
+
+                slide1.addText([
+                    { text: "Giáo viên: ", options: { bold: true, color: PINK_DARK } },
+                    { text: `${currentSKKNData.author}\n` },
+                    { text: "Môn / Lớp: ", options: { bold: true, color: PINK_DARK } },
+                    { text: `${currentSKKNData.subject} - ${currentSKKNData.grade}` }
+                ], {
+                    x: 1.5, y: 4.2, w: 7.0, h: 1.2,
+                    fontSize: 16, color: TEXT_DARK, align: 'center', fontFace: 'Arial',
+                    fill: { color: 'FFFFFF' }, line: { color: PINK_MAIN, width: 2 }
+                });
+
+                // Helper Function for Content Slides
+                const createContentSlide = (titleText, badgeText, contentLines) => {
+                    const slide = pptx.addSlide();
+                    slide.background = { color: 'FFFFFF' };
+
+                    // Top Decorative Banner
+                    slide.addShape(pptx.shapes.RECTANGLE, { x: 0, y: 0, w: '100%', h: 1.0, fill: { color: PINK_LIGHT } });
+                    slide.addText(titleText, {
+                        x: 0.5, y: 0.2, w: 7.5, h: 0.6,
+                        fontSize: 20, bold: true, color: PINK_DARK, fontFace: 'Arial'
+                    });
+                    slide.addText(badgeText, {
+                        x: 8.0, y: 0.3, w: 1.5, h: 0.4,
+                        fontSize: 11, bold: true, color: 'FFFFFF', fill: { color: PINK_MAIN }, align: 'center', fontFace: 'Arial'
+                    });
+
+                    // Main Content Box
+                    slide.addText(contentLines, {
+                        x: 0.8, y: 1.4, w: 8.4, h: 5.0,
+                        fontSize: 16, color: TEXT_DARK, fontFace: 'Arial',
+                        lineSpacing: 28, valig: 'top'
+                    });
+
+                    return slide;
+                };
+
+                // Slide 2: Lý do chọn đề tài
+                createContentSlide(
+                    "1. MỞ ĐẦU & LÝ DO CHỌN ĐỀ TÀI 📚",
+                    "PHẦN I",
+                    [
+                        { text: "Mục đích nghiên cứu:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: `• Nâng cao chất lượng dạy và học môn ${currentSKKNData.subject} cho học sinh ${currentSKKNData.grade}.\n\n` },
+                        { text: "Xuất phát từ thực tiễn:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: `• Giúp học sinh nắm vững kiến thức, hào hứng trong từng tiết học.\n• Đổi mới phương pháp truyền thụ kiến thức theo hướng phát triển năng lực.` }
+                    ]
+                );
+
+                // Slide 3: Thực trạng
+                createContentSlide(
+                    "2. THỰC TRẠNG BAN ĐẦU 🥀",
+                    "PHẦN II",
+                    [
+                        { text: "Khó khăn và hạn chế ghi nhận:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: `${currentSKKNData.problem}\n\n` },
+                        { text: "Yêu cầu đặt ra:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: "• Cần giải pháp mới sinh động, phù hợp tâm lý lứa tuổi học sinh." }
+                    ]
+                );
+
+                // Slide 4: Giải pháp
+                createContentSlide(
+                    "3. CÁC BIỆN PHÁP CẢI TIẾN ⭐",
+                    "GIẢI PHÁP",
+                    [
+                        { text: "Hệ thống các biện pháp thực hiện:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: currentSKKNData.solution }
+                    ]
+                );
+
+                // Slide 5: Kết quả
+                createContentSlide(
+                    "4. KẾT QUẢ ĐẠT ĐƯỢC 💖",
+                    "HIỆU QUẢ",
+                    [
+                        { text: "Kết quả thực nghiệm ứng dụng:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: `${currentSKKNData.result}\n\n` },
+                        { text: "Đánh giá chung:\n", options: { bold: true, color: PINK_DARK } },
+                        { text: "• Học sinh tích cực, chủ động và phát triển tư duy sáng tạo tốt hơn." }
+                    ]
+                );
+
+                // Slide 6: Ending Slide
+                const slide6 = pptx.addSlide();
+                slide6.background = { color: PINK_LIGHT };
+                slide6.addText("KẾT LUẬN & TRÂN TRỌNG CẢM ƠN! 🎀", {
+                    x: 0.5, y: 2.2, w: 9.0, h: 0.8,
+                    fontSize: 26, bold: true, color: PINK_DARK, align: 'center', fontFace: 'Arial'
+                });
+                slide6.addText("Kính chúc Quý Thầy Cô Sức Khỏe & Hạnh Phúc! ✨", {
+                    x: 0.5, y: 3.2, w: 9.0, h: 0.6,
+                    fontSize: 18, color: TEXT_DARK, align: 'center', fontFace: 'Arial'
+                });
+
+                // DUAL EXPORT STRATEGY for Samsung Mobile / Google WebViews compatibility
+                const fileName = `Slide_SKKN_${currentSKKNData.subject}_${currentSKKNData.grade}.pptx`;
+
+                // 1. First try standard writeFile
+                pptx.writeFile({ fileName: fileName })
+                    .then(() => {
+                        playKawaiiSound('success');
+                        showKawaiiToast('Tải Slide PowerPoint (.pptx) thành công! 🎉', '✨');
+                    })
+                    .catch(async (err) => {
+                        console.warn('Direct save failed, attempting Blob Modal Fallback:', err);
+                        // 2. Fallback to Base64/Blob Data URI Modal
+                        const base64Data = await pptx.write({ outputType: 'base64' });
+                        const dataUri = `data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,${base64Data}`;
+
+                        const downloadBtn = document.getElementById('fallbackDownloadLink');
+                        downloadBtn.href = dataUri;
+                        downloadBtn.download = fileName;
+
+                        document.getElementById('fallbackModal').classList.remove('hidden');
+                        showKawaiiToast('Sẵn sàng tải slide qua liên kết trực tiếp! 🎀', '💖');
+                    });
+
+            } catch (error) {
+                console.error(error);
+                showKawaiiToast('Có lỗi xảy ra khi tạo Slide PowerPoint!', '⚠️');
+            }
+        }
+
+        function closeFallbackModal() {
+            document.getElementById('fallbackModal').classList.add('hidden');
+        }
+
+        // Initialize App on DOM Ready
+        window.addEventListener('DOMContentLoaded', () => {
+            // Pre-fill default template 0 on first open
+            loadTemplate(0);
+        });
+    </script>
+</body>
+</html>
